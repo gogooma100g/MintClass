@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Mint class time</title>
+  <p>나의 학습시간 : <span id="ret"></span></p>
+  <textarea id="tarea" rows=10 cols=100 style="text-align:center;"></textarea>
+  <input name="textarea" type="button" id="execute" value="확인" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script>
+
+      $('#execute').click(function() {
+
+        var countPostpone=0;
+        var countAb=0;
+        var count10Min=0;
+        var count20Min=0;
+        var count30Min=0;
+
+        var data = $('#tarea').val();
+        var fields = data.split(' ~ ');
+
+        var count=0;
+        for(var idx=0; idx<fields.length; idx++) {
+          count++;
+
+          var text = fields[idx];
+          var prevText = "";
+
+          var prevIndex = 0;
+          if (idx==0)
+            prevIndex = "";
+          else
+            prevText = fields[idx-1];
+
+          var startTime = prevText.substring(prevText.length-5, prevText.length);
+          var endTime = text.substring(0, 5);
+
+          if (startTime.indexOf(":") == -1 || endTime.indexOf(":") == -1) {
+            continue;
+          }
+
+          if (prevText.indexOf("'하루연기'") != -1) {
+            countPostpone++;
+            continue;
+          }
+
+          if (prevText.indexOf("결석 피드백") != -1) {
+            countAb++;
+            continue;
+          }
+
+          var startHour = startTime.split(":")[0];
+          var startMin = parseInt(startTime.split(":")[1]);
+
+          var endHour = endTime.split(":")[0];
+          var endMin = parseInt(endTime.split(":")[1]);
+
+
+          var differMin = 0;
+          if (endMin > startMin) {
+            differMin = endMin - startMin;
+          } else {
+             differMin = 60 - startMin + endMin;
+          }
+
+          if (differMin == 10)
+            count10Min++;
+          else if (differMin == 20)
+            count20Min++;
+          else {
+            count30Min++;
+          }
+
+        }
+
+
+        var ret10Min = "10분수업 개수 " + count10Min + ", 총 " + count10Min*10 + "분<br>";
+        var ret20Min = "20분수업 개수 " + count20Min + ", 총 " + count20Min*20 + "분<br>";
+        var ret30Min = "30분수업 개수 " + count30Min + ", 총 " + count30Min*30 + "분<br><br>";
+
+        var retPostpone = "연기 횟수 " + countPostpone + "<br>";
+        var retAb = "결석 횟수 " + countAb + "<br><br>";
+
+        var retClassCnt = "총 수업 개수 " + (count10Min + count20Min + count30Min) + "개<br>";
+        var retTotalMin = "총 수업 분 " + (count10Min*10 + count20Min*20 + count30Min*30) + "분<br><br>";
+
+
+        $("#ret").html("<br><br>"+ret10Min + ret20Min + ret30Min + retPostpone + retAb + retClassCnt + retTotalMin);
+
+      });
+
+    </script>
+
+</head>
+</html>
