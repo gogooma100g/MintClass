@@ -14,12 +14,13 @@
 
         var countPostpone=0;
         var countAb=0;
+        var countCanceled=0;
         var count10Min=0;
         var count20Min=0;
         var count30Min=0;
 
         var data = $('#tarea').val();
-        var fields = data.split(' ~ ');
+        var fields = data.split('∼');
 
         var count=0;
         for(var idx=0; idx<fields.length; idx++) {
@@ -55,6 +56,11 @@
             continue;
           }
 
+          if (prevText.indexOf("'휴강'") != -1) {
+            countCanceled++;
+            continue;
+          }
+
           var startHour = startTime.split(":")[0];
           var startMin = parseInt(startTime.split(":")[1]);
 
@@ -85,13 +91,14 @@
         var ret30Min = "30분수업 개수 " + count30Min + ", 총 " + count30Min*30 + "분<br><br>";
 
         var retPostpone = "연기 횟수 " + countPostpone + "<br>";
-        var retAb = "결석 횟수 " + countAb + "<br><br>";
+        var retAb = "결석 횟수 " + countAb + "<br>";
+        var retCanceled = "임시휴강 횟수 " + countCanceled + "<br><br>";
 
         var retClassCnt = "총 수업 개수 " + (count10Min + count20Min + count30Min) + "개<br>";
         var retTotalMin = "총 수업 분 " + (count10Min*10 + count20Min*20 + count30Min*30) + "분<br><br>";
 
 
-        $("#ret").html("<br><br>"+ret10Min + ret20Min + ret30Min + retPostpone + retAb + retClassCnt + retTotalMin);
+        $("#ret").html("<br><br>"+ret10Min + ret20Min + ret30Min + retPostpone + retAb + retCanceled + retClassCnt + retTotalMin);
 
       });
 
